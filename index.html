@@ -86,7 +86,18 @@
         </div>
 
         <div>
-          <label>סגנון/ויראליות (Style Boost)</label>
+          <label>תבנית מוכנה (Template)</label>
+          <select id="templateSelect">
+            <option value="">בחר תבנית…</option>
+            <option value="travel_editorial">Travel Editorial (אייקוני)</option>
+            <option value="festival_energy">Festival Energy (פסטיבל)</option>
+            <option value="street_cinematic">Cinematic Street (עירוני)</option>
+            <option value="luxury_minimal">Luxury Minimal (יוקרתי נקי)</option>
+            <option value="sporty_motion">Sporty Motion (תנועה ספורטיבית)</option>
+          </select>
+          <div class="hint">התבנית ממלאת Pose / Atmosphere / Outfit / Style / Time. אפשר לערוך ידנית אחר כך.</div>
+
+          <label style="margin-top:12px;">סגנון/ויראליות (Style Boost)</label>
           <select id="styleBoost">
             <option value="iconic travel-fashion editorial aesthetic">Travel-Fashion Editorial (אייקוני)</option>
             <option value="high-energy festival-editorial aesthetic">Festival Energy (תנועה ואנרגיה)</option>
@@ -107,13 +118,14 @@
             </label>
           </div>
 
-          <div class="hint">ניטרלי מגדר: “a person”. אקסטרה-ויראלי: מוסיף “iconic / dynamic / stop-scroll”.</div>
+          <div class="hint">אקסטרה-ויראלי מוסיף “stop-scroll / iconic”.</div>
         </div>
       </div>
 
       <div class="row">
         <button id="generateBtn">צור פרומפט</button>
         <button class="secondary" id="fillRioBtn">מלא דוגמה: ריו קרנבל</button>
+        <button class="secondary" id="randomLocBtn">Random Location 🎲</button>
         <button class="secondary" id="copyBtn">העתק ללוח</button>
         <button class="secondary" id="clearBtn">נקה</button>
       </div>
@@ -124,6 +136,67 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
+
+  const RANDOM_LOCATIONS = [
+    "New York City — Times Square",
+    "Tokyo — Shibuya Crossing",
+    "London — Tower Bridge",
+    "Paris — Louvre Pyramid",
+    "Rome — Trevi Fountain",
+    "Dubai — Downtown / Burj Khalifa",
+    "Rio de Janeiro — Ipanema Beach",
+    "Barcelona — Sagrada Família",
+    "Istanbul — Hagia Sophia",
+    "Kyoto — Fushimi Inari Shrine",
+    "Singapore — Marina Bay Sands",
+    "Sydney — Opera House",
+    "Cape Town — Table Mountain viewpoint",
+    "Reykjavik — Hallgrímskirkja",
+    "Marrakesh — Jemaa el-Fnaa",
+    "Prague — Charles Bridge",
+    "Amsterdam — canal street",
+    "Athens — Acropolis viewpoint",
+    "Bangkok — Wat Arun",
+    "Mexico City — Palacio de Bellas Artes"
+  ];
+
+  const TEMPLATES = {
+    travel_editorial: {
+      pose: "in a confident, natural pose",
+      atmosphere: "iconic landmark presence, clean depth separation, subtle background activity",
+      outfit: "structured jacket or blazer, minimalist top, relaxed-tailored trousers, modern clean footwear, subtle accessories",
+      styleBoost: "iconic travel-fashion editorial aesthetic",
+      timeEvent: "early morning soft light"
+    },
+    festival_energy: {
+      pose: "mid-celebration, dynamic motion frozen in time",
+      atmosphere: "confetti in the air, vibrant crowd energy, layered motion in the background",
+      outfit: "bold expressive layers, shimmering accents, premium textures, statement accessories — fashionable, not costume-like",
+      styleBoost: "high-energy festival-editorial aesthetic",
+      timeEvent: "peak festival energy"
+    },
+    street_cinematic: {
+      pose: "mid-step walk with calm confidence",
+      atmosphere: "urban glow, cinematic city depth, subtle motion blur in background only",
+      outfit: "clean layered streetwear, refined denim or tailored trousers, modern footwear, understated accessories",
+      styleBoost: "cinematic street-fashion aesthetic",
+      timeEvent: "blue hour twilight"
+    },
+    luxury_minimal: {
+      pose: "still, composed, editorial posture",
+      atmosphere: "minimal background clutter, premium architectural lines, clean light falloff",
+      outfit: "sharp minimal layers, neutral tones, premium fabric drape, refined silhouette, subtle accessories",
+      styleBoost: "luxury modern editorial aesthetic",
+      timeEvent: "golden hour sunrise"
+    },
+    sporty_motion: {
+      pose: "dynamic athletic stance, captured at the peak of motion",
+      atmosphere: "crisp air, strong directional light, energetic composition, background motion blur only",
+      outfit: "modern sporty layers, technical fabric pieces, clean sneakers, minimal accessories",
+      styleBoost: "iconic travel-fashion editorial aesthetic",
+      timeEvent: "bright daylight"
+    }
+  };
 
   const IDENTITY_BLOCK =
 `Ultra-realistic 8K cinematic portrait using the uploaded photo as the ONLY identity reference — 100% facial preservation (exact facial structure, proportions, skin tone, expression DNA).
@@ -171,6 +244,26 @@
 
   $("generateBtn").addEventListener("click", generate);
 
+  $("templateSelect").addEventListener("change", () => {
+    const key = $("templateSelect").value;
+    if (!key || !TEMPLATES[key]) return;
+
+    const t = TEMPLATES[key];
+    $("pose").value = t.pose;
+    $("atmosphere").value = t.atmosphere;
+    $("outfit").value = t.outfit;
+    $("styleBoost").value = t.styleBoost;
+    $("timeEvent").value = t.timeEvent;
+
+    generate();
+  });
+
+  $("randomLocBtn").addEventListener("click", () => {
+    const pick = RANDOM_LOCATIONS[Math.floor(Math.random() * RANDOM_LOCATIONS.length)];
+    $("location").value = pick;
+    generate();
+  });
+
   $("copyBtn").addEventListener("click", async () => {
     const text = $("output").textContent.trim() || buildPrompt();
     try {
@@ -186,6 +279,7 @@
     ["location","pose","atmosphere","outfit"].forEach(id => $(id).value = "");
     $("timeEvent").value = "early morning soft light";
     $("styleBoost").value = "iconic travel-fashion editorial aesthetic";
+    $("templateSelect").value = "";
     $("neutralGender").checked = true;
     $("extraViral").checked = true;
     $("output").textContent = "";
@@ -198,10 +292,11 @@
     $("atmosphere").value = "vibrant dancers, feathers, confetti exploding in the air, dense festive crowd energy";
     $("outfit").value = "a bold carnival-inspired look with shimmering fabrics, colorful embroidery, metallic accents, expressive layered textures, premium accessories";
     $("styleBoost").value = "high-energy festival-editorial aesthetic";
+    $("templateSelect").value = "festival_energy";
     generate();
   });
 
-  // Generate once on load with placeholders so user sees the structure
+  // Generate once on load so user sees structure immediately
   generate();
 </script>
 </body>
