@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prompt Generator — Identity Locked</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif; }
+    body { margin: 0; background: #0b0f19; color: #e9eefc; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 20px; }
+    .card { background: #121a2b; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    h1 { margin: 0 0 8px; font-size: 22px; }
+    p  { margin: 6px 0 12px; opacity: .9; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: block; font-size: 13px; opacity: .9; margin-bottom: 6px; }
+    input, textarea, select {
+      width: 100%; box-sizing: border-box;
+      background: #0e1526; color: #e9eefc;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px; padding: 10px 12px;
+      outline: none;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .row { display:flex; gap:10px; flex-wrap: wrap; margin-top: 12px; }
+    button {
+      background: #3a7afe; color: white; border: 0;
+      padding: 10px 14px; border-radius: 12px; cursor: pointer;
+      font-weight: 650;
+    }
+    button.secondary { background: #24314d; }
+    .out {
+      margin-top: 14px;
+      background: #0a1020; border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px; padding: 14px;
+      white-space: pre-wrap; line-height: 1.6;
+      direction: ltr; text-align: left;
+    }
+    .hint { font-size: 12px; opacity: .75; margin-top: 6px; }
+    .badge { display:inline-block; padding: 3px 8px; border-radius: 999px; background: rgba(58,122,254,.15); border: 1px solid rgba(58,122,254,.35); font-size: 12px; }
+    @media (max-width: 820px){ .grid{ grid-template-columns: 1fr; } }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>מחולל פרומפטים — Identity Locked</h1>
+      <p>
+        ממלאים <span class="badge">מיקום</span> + <span class="badge">פוזה</span> + <span class="badge">לבוש</span> + <span class="badge">אווירה</span>
+        ומקבלים פרומפט מוכן. תמיד עם <b>100% שמירה על הפנים</b>.
+      </p>
+
+      <div class="grid">
+        <div>
+          <label>מיקום / אתר (Location)</label>
+          <input id="location" placeholder="לדוגמה: Rio de Janeiro Carnival / Times Square / Kyoto Fushimi Inari" />
+          <div class="hint">טיפ: כתוב גם עיר וגם אתר/אזור — זה נותן תוצאה יותר חדה.</div>
+        </div>
+
+        <div>
+          <label>זמן/אירוע (Time of day / Event)</label>
+          <select id="timeEvent">
+            <option value="early morning soft light">בוקר מוקדם (early morning)</option>
+            <option value="golden hour sunrise">זריחה / זהב (golden hour)</option>
+            <option value="bright daylight">יום בהיר (daylight)</option>
+            <option value="blue hour twilight">דמדומים (blue hour)</option>
+            <option value="night with cinematic city lights">לילה עם אורות עיר (night)</option>
+            <option value="peak festival energy">שיא פסטיבל (festival peak)</option>
+          </select>
+        </div>
+
+        <div>
+          <label>פוזה / פעולה (Pose / Action)</label>
+          <input id="pose" placeholder="לדוגמה: mid-step walk, confident stance, laughing mid-celebration" />
+        </div>
+
+        <div>
+          <label>רקע / אווירה (Background / Atmosphere)</label>
+          <input id="atmosphere" placeholder="לדוגמה: confetti, crowd blur, iconic skyline, light haze" />
+        </div>
+
+        <div>
+          <label>לבוש מודרני/אופנתי (Outfit)</label>
+          <textarea id="outfit" placeholder="לדוגמה: tailored jacket, minimalist top, relaxed trousers, modern sneakers, subtle accessories"></textarea>
+          <div class="hint">לא חובה לציין שיער. עדיף לתאר סגנון ביגוד ושכבות.</div>
+        </div>
+
+        <div>
+          <label>סגנון/ויראליות (Style Boost)</label>
+          <select id="styleBoost">
+            <option value="iconic travel-fashion editorial aesthetic">Travel-Fashion Editorial (אייקוני)</option>
+            <option value="high-energy festival-editorial aesthetic">Festival Energy (תנועה ואנרגיה)</option>
+            <option value="luxury modern editorial aesthetic">Luxury Editorial (יוקרתי)</option>
+            <option value="cinematic street-fashion aesthetic">Cinematic Street (עירוני)</option>
+            <option value="minimalist cinematic portrait aesthetic">Minimal Cinematic (נקי)</option>
+          </select>
+
+          <div class="row">
+            <label style="margin:0; display:flex; gap:10px; align-items:center;">
+              <input type="checkbox" id="neutralGender" checked style="width:auto;" />
+              ניטרלי מגדר (Gender-neutral)
+            </label>
+
+            <label style="margin:0; display:flex; gap:10px; align-items:center;">
+              <input type="checkbox" id="extraViral" checked style="width:auto;" />
+              אקסטרה-ויראלי (Extra viral)
+            </label>
+          </div>
+
+          <div class="hint">ניטרלי מגדר: “a person”. אקסטרה-ויראלי: מוסיף “iconic / dynamic / stop-scroll”.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="generateBtn">צור פרומפט</button>
+        <button class="secondary" id="fillRioBtn">מלא דוגמה: ריו קרנבל</button>
+        <button class="secondary" id="copyBtn">העתק ללוח</button>
+        <button class="secondary" id="clearBtn">נקה</button>
+      </div>
+
+      <div class="out" id="output" aria-label="Generated prompt"></div>
+    </div>
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  const IDENTITY_BLOCK =
+`Ultra-realistic 8K cinematic portrait using the uploaded photo as the ONLY identity reference — 100% facial preservation (exact facial structure, proportions, skin tone, expression DNA).
+❌ No beautification, no stylization of the face, no age change, no gender change, no distortion, no face swapping.`;
+
+  const CINEMATIC_BLOCK =
+`Cinematic lighting matched to the environment, natural shadows, shallow depth of field isolating the subject, ultra-sharp focus on the face, realistic fabric and skin textures, dynamic yet believable composition, 8K photorealism.`;
+
+  function buildPrompt() {
+    const location = $("location").value.trim();
+    const timeEvent = $("timeEvent").value.trim();
+    const pose = $("pose").value.trim();
+    const atmosphere = $("atmosphere").value.trim();
+    const outfit = $("outfit").value.trim();
+    const styleBoost = $("styleBoost").value.trim();
+
+    const neutralGender = $("neutralGender").checked;
+    const extraViral = $("extraViral").checked;
+
+    const subject = neutralGender ? "A person" : "A person"; // נשאר ניטרלי גם אם מבטלים—אפשר לשנות בעתיד.
+    const viralLine = extraViral
+      ? "Stop-scroll, iconic moment, visually striking yet realistic."
+      : "";
+
+    const sceneLine = `${subject} captured ${pose || "in a confident, natural pose"} at ${location || "[LOCATION]"}, during ${timeEvent || "[TIME / EVENT]"}.`;
+    const envLine = `Environment details: ${atmosphere || "[KEY BACKGROUND ELEMENTS / ATMOSPHERE]"}.`;
+    const outfitLine = `Wearing ${outfit || "[OUTFIT DESCRIPTION]"} — modern, fashion-forward, cohesive, and location-appropriate.`;
+    const styleLine = `Overall aesthetic: ${styleBoost}.`;
+
+    return [
+      IDENTITY_BLOCK,
+      "",
+      sceneLine,
+      envLine,
+      outfitLine,
+      styleLine,
+      viralLine,
+      CINEMATIC_BLOCK
+    ].filter(Boolean).join("\n");
+  }
+
+  function generate() {
+    $("output").textContent = buildPrompt();
+  }
+
+  $("generateBtn").addEventListener("click", generate);
+
+  $("copyBtn").addEventListener("click", async () => {
+    const text = $("output").textContent.trim() || buildPrompt();
+    try {
+      await navigator.clipboard.writeText(text);
+      $("copyBtn").textContent = "הועתק ✅";
+      setTimeout(() => $("copyBtn").textContent = "העתק ללוח", 900);
+    } catch {
+      alert("הדפדפן חסם העתקה. סמן את הטקסט והעתק ידנית (Ctrl+C).");
+    }
+  });
+
+  $("clearBtn").addEventListener("click", () => {
+    ["location","pose","atmosphere","outfit"].forEach(id => $(id).value = "");
+    $("timeEvent").value = "early morning soft light";
+    $("styleBoost").value = "iconic travel-fashion editorial aesthetic";
+    $("neutralGender").checked = true;
+    $("extraViral").checked = true;
+    $("output").textContent = "";
+  });
+
+  $("fillRioBtn").addEventListener("click", () => {
+    $("location").value = "Rio de Janeiro Carnival, Sambadrome";
+    $("timeEvent").value = "peak festival energy";
+    $("pose").value = "mid-celebration, dynamic motion frozen in time";
+    $("atmosphere").value = "vibrant dancers, feathers, confetti exploding in the air, dense festive crowd energy";
+    $("outfit").value = "a bold carnival-inspired look with shimmering fabrics, colorful embroidery, metallic accents, expressive layered textures, premium accessories";
+    $("styleBoost").value = "high-energy festival-editorial aesthetic";
+    generate();
+  });
+
+  // Generate once on load with placeholders so user sees the structure
+  generate();
+</script>
+</body>
+</html>
